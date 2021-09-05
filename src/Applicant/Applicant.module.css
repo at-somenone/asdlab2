@@ -1,0 +1,28 @@
+.applicant {
+    margin: 5px;
+    background-color: rgb(192, 219, 229);
+    display: grid;
+    grid-auto-columns: 20em 20em auto;
+    width: fit-content;
+}
+
+.editingApplicant {
+    background-color: rgb(205, 192, 229);
+}
+.applicant > * {
+    margin: 3px
+}
+
+.left {
+    grid-column: 1;
+    /* width: 20em; */
+}
+
+.middle {
+    grid-column: 2;
+    /* width: 20em; */
+}
+
+.right {
+    grid-column: 3;
+}
