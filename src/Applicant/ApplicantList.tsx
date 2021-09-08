@@ -9,10 +9,11 @@ type Props = {
     onRemove: (node: INode<Keyed<Applicant>>) => void
 }
 
-const ApplicantList = ({ list, onRemove }: Props) => (
+const ApplicantList = ({ list, onRemove }: Props): JSX.Element => (
     <div>
         {list.mapNodes(node => (
             <ApplicantView
+                key={node.item.key}
                 applicant={node.item}
                 onRemove={() => onRemove(node)}
             />

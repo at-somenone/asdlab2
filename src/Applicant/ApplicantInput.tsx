@@ -3,13 +3,14 @@ import { observer, useLocalObservable } from 'mobx-react-lite'
 import Applicant, { ExamGrade } from './Applicant'
 import styles from './Applicant.module.css'
 import classNames from 'classnames'
+import { Mutable } from 'type-fest'
 type Props = {
     onAdd: (a: Applicant) => void
     onAddRandom: () => void
 }
 
-const ApplicantInput = ({ onAdd, onAddRandom }: Props) => {
-    const defaultApplicant = () => ({
+const ApplicantInput = ({ onAdd, onAddRandom }: Props): JSX.Element => {
+    const defaultApplicant = (): Mutable<Applicant> => ({
         lastName: '',
         grades: [
             ExamGrade.Excellent,
@@ -20,9 +21,9 @@ const ApplicantInput = ({ onAdd, onAddRandom }: Props) => {
         city: '',
         needsHousing: false,
     })
-    let state = useLocalObservable(() => ({ applicant: defaultApplicant() }))
+    const state = useLocalObservable(() => ({ applicant: defaultApplicant() }))
 
-    const makeApplicant = () => {
+    const makeApplicant = (): Applicant => {
         const applicant: Applicant = state.applicant
         runInAction(() => (state.applicant = defaultApplicant()))
         return applicant
@@ -43,6 +44,7 @@ const ApplicantInput = ({ onAdd, onAddRandom }: Props) => {
                 <span>Оценки:</span>{' '}
                 {[0, 1, 2].map(k => (
                     <select
+                        key={k}
                         onChange={action(e => {
                             state.applicant.grades[k] = [
                                 ExamGrade.Excellent,

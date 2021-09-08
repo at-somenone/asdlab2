@@ -6,7 +6,7 @@ type Props = {
     onRemove: () => void
 }
 
-const ApplicantView = ({ applicant,onRemove }: Props) => (
+const ApplicantView = ({ applicant, onRemove }: Props): JSX.Element => (
     <div className={styles.applicant}>
         <div className={styles.left}>
             <span>Фамилия: {applicant.lastName}</span>
@@ -40,8 +40,7 @@ const ApplicantView = ({ applicant,onRemove }: Props) => (
             </span>
             <br />
             <span>
-                Необходимо общежитие:{' '}
-                {applicant.needsHousing ? 'Да' : 'Нет'}
+                Необходимо общежитие: {applicant.needsHousing ? 'Да' : 'Нет'}
             </span>
         </div>
         <div className={styles.right}>

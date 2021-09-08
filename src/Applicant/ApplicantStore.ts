@@ -32,38 +32,37 @@ export default class ApplicantStore {
         makeObservable(this)
     }
 
-    @action add(applicant: Applicant) {
+    @action add(applicant: Applicant): void {
         this.list.add(observable({ key: uuid(), ...applicant }))
     }
 
-    @action addRandom() {
-        console.log('hi')
+    @action addRandom(): void {
         const chance = new Chance()
-        const getGrade = () =>
+        const getGrade = (): ExamGrade =>
             chance.pickone([
                 ExamGrade.Fail,
                 ExamGrade.Pass,
                 ExamGrade.Good,
                 ExamGrade.Excellent,
             ])
-        
+
         const applicant: Keyed<Applicant> = {
             lastName: chance.last(),
             grades: [getGrade(), getGrade(), getGrade()],
             hasCertificate: chance.bool(),
             city: chance.city(),
             needsHousing: chance.bool(),
-            key: uuid()
+            key: uuid(),
         }
 
         this.add(applicant)
     }
 
-    @action clear() {
+    @action clear(): void {
         this.list.clear()
     }
 
-    @action remove(node: INode<Keyed<Applicant>>) {
+    @action remove(node: INode<Keyed<Applicant>>): void {
         this.list.remove(node)
     }
 }

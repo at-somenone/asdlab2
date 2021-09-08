@@ -9,8 +9,9 @@
 .editingApplicant {
     background-color: rgb(205, 192, 229);
 }
+
 .applicant > * {
-    margin: 3px
+    margin: 3px;
 }
 
 .left {

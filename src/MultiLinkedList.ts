@@ -1,4 +1,4 @@
-import { createAtom, IAtom } from "mobx"
+import { createAtom, IAtom } from 'mobx'
 
 type Predicate<T> = (item: T) => boolean
 
@@ -14,7 +14,6 @@ interface ISublist<T> {
     nodes(): INode<T>[]
     map<TResult>(func: (item: T) => TResult): TResult[]
     mapNodes<TResult>(func: (node: INode<T>) => TResult): TResult[]
-
 }
 
 class Node<T> implements INode<T> {
@@ -23,10 +22,10 @@ class Node<T> implements INode<T> {
 
     constructor(readonly item: T) {}
 
-    nextOf(sublist: ISublist<T>) {
+    nextOf(sublist: ISublist<T>): Node<T> | undefined {
         return this.nextPointers.get(sublist)
     }
-    prevOf(sublist: ISublist<T>) {
+    prevOf(sublist: ISublist<T>): Node<T> | undefined {
         return this.prevPointers.get(sublist)
     }
 }
@@ -36,21 +35,17 @@ class Sublist<T> implements ISublist<T> {
     private lastNode?: Node<T>
 
     constructor(readonly predicate: Predicate<T>) {}
-    first() {
+    first(): Node<T> | undefined {
         return this.firstNode
     }
 
-    last() {
+    last(): Node<T> | undefined {
         return this.lastNode
     }
 
-    add(newNode: Node<T>) {
+    add(newNode: Node<T>): void {
         if (!this.firstNode) {
             this.firstNode = newNode
-            this.lastNode = newNode
-        } else if (this.firstNode === this.lastNode) {
-            this.firstNode.nextPointers.set(this, newNode)
-            newNode.prevPointers.set(this, this.firstNode)
             this.lastNode = newNode
         } else if (this.lastNode) {
             this.lastNode.nextPointers.set(this, newNode)
@@ -59,7 +54,7 @@ class Sublist<T> implements ISublist<T> {
         }
     }
 
-    remove(removedNode: Node<T>) {
+    remove(removedNode: Node<T>): void {
         const next = removedNode.nextPointers.get(this)
         const prev = removedNode.prevPointers.get(this)
 
@@ -79,7 +74,7 @@ class Sublist<T> implements ISublist<T> {
         }
     }
 
-    forEachMutNode(func: (node: Node<T>) => void) {
+    forEachMutNode(func: (node: Node<T>) => void): void {
         let currentNode = this.firstNode
         while (currentNode) {
             func(currentNode)
@@ -87,7 +82,7 @@ class Sublist<T> implements ISublist<T> {
         }
     }
 
-    forEachNode(func: (node: INode<T>) => void) {
+    forEachNode(func: (node: INode<T>) => void): void {
         this.forEachMutNode(func)
     }
 
@@ -103,16 +98,21 @@ class Sublist<T> implements ISublist<T> {
         return arr
     }
 
-    nodes() {
+    nodes(): INode<T>[] {
         const arr: INode<T>[] = []
         this.forEachNode(n => arr.push(n))
         return arr
     }
 
-    content() {
+    content(): T[] {
         const arr: T[] = []
         this.forEachNode(n => arr.push(n.item))
         return arr
+    }
+
+    clear(): void {
+        this.firstNode = undefined
+        this.lastNode = undefined
     }
 }
 
@@ -124,32 +124,32 @@ class ObservableSublist<T> extends Sublist<T> {
         this.atom = createAtom('ObservableSublist')
     }
 
-    first() {
+    first(): Node<T> | undefined {
         this.atom.reportObserved()
         return super.first()
     }
 
-    last() {
+    last(): Node<T> | undefined {
         this.atom.reportObserved()
         return super.last()
     }
 
-    add(newNode: Node<T>) {
+    add(newNode: Node<T>): void {
         this.atom.reportChanged()
         super.add(newNode)
     }
 
-    remove(removedNode: Node<T>) {
+    remove(removedNode: Node<T>): void {
         this.atom.reportChanged()
         super.remove(removedNode)
     }
 
-    forEachMutNode(func: (node: Node<T>) => void) {
+    forEachMutNode(func: (node: Node<T>) => void): void {
         this.atom.reportObserved()
         super.forEachMutNode(func)
     }
 
-    forEachNode(func: (node: INode<T>) => void) {
+    forEachNode(func: (node: INode<T>) => void): void {
         this.atom.reportObserved()
         super.forEachNode(func)
     }
@@ -164,12 +164,12 @@ class ObservableSublist<T> extends Sublist<T> {
         return super.mapNodes(func)
     }
 
-    nodes() {
+    nodes(): INode<T>[] {
         this.atom.reportObserved()
         return super.nodes()
     }
 
-    content() {
+    content(): T[] {
         this.atom.reportObserved()
         return super.content()
     }
@@ -184,7 +184,7 @@ class MultiLinkedList<T> {
         this.mainList = new Sublist(() => true)
     }
 
-    getMainList() {
+    getMainList(): ISublist<T> {
         return this.mainList as ISublist<T>
     }
 
@@ -196,13 +196,13 @@ class MultiLinkedList<T> {
         return sublist
     }
 
-    protected populateSublist(sublist: Sublist<T>) {
+    protected populateSublist(sublist: Sublist<T>): void {
         this.mainList.forEachMutNode(node => {
             if (sublist.predicate(node.item)) sublist.add(node)
         })
     }
 
-    add(item: T) {
+    add(item: T): void {
         const node = new Node(item)
         this.mainList.add(node)
         this.sublists.forEach(s => {
@@ -210,14 +210,15 @@ class MultiLinkedList<T> {
         })
     }
 
-    remove(node: INode<T>) {
+    remove(node: INode<T>): void {
         const mNode = node as Node<T>
         this.mainList.remove(mNode)
         this.sublists.forEach(s => s.remove(mNode))
     }
 
-    clear() {
-        this.mainList.nodes().forEach(node => this.remove(node))
+    clear(): void {
+        this.mainList.clear()
+        this.sublists.forEach(l => l.clear())
     }
 }
 

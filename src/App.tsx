@@ -1,8 +1,12 @@
+/* eslint-disable react/jsx-filename-extension */
 import { action } from 'mobx'
 import { observer, useLocalObservable } from 'mobx-react'
+import Applicant from './Applicant/Applicant'
 import ApplicantInput from './Applicant/ApplicantInput'
 import ApplicantList from './Applicant/ApplicantList'
 import ApplicantStore from './Applicant/ApplicantStore'
+import Keyed from './Keyed'
+import { ISublist } from './MultiLinkedList'
 
 enum ShowMode {
     All,
@@ -12,13 +16,13 @@ enum ShowMode {
     NeedsHousing,
 }
 
-function App() {
+function App(): JSX.Element {
     const state = useLocalObservable(() => ({
         store: new ApplicantStore(),
         mode: ShowMode.All,
     }))
 
-    const getList = () => {
+    const getList = (): ISublist<Keyed<Applicant>> => {
         switch (state.mode) {
             case ShowMode.All:
                 return state.store.allApplicants
@@ -35,8 +39,10 @@ function App() {
 
     return (
         <div>
-            <button onClick={action(() => state.store.clear())}>Удалить все</button>
-            <br/>
+            <button onClick={action(() => state.store.clear())}>
+                Удалить все
+            </button>
+            <br />
             <input
                 id="showAll"
                 type="radio"
@@ -68,9 +74,7 @@ function App() {
                     if (e.target.checked) state.mode = ShowMode.HasCertificate
                 })}
             />
-            <label htmlFor="showHasCertificate">
-                Есть аттестат с отличием
-            </label>
+            <label htmlFor="showHasCertificate">Есть аттестат с отличием</label>
             <br />
             <input
                 id="showOutsideOryol"
@@ -93,8 +97,14 @@ function App() {
             <label htmlFor="showNeedsHousing">Требуется общежитие</label>
             <br />
 
-            <ApplicantInput onAdd={a => state.store.add(a)} onAddRandom={action(() => state.store.addRandom())} />
-            <ApplicantList onRemove={action(node => state.store.remove(node))} list={getList()} />
+            <ApplicantInput
+                onAdd={a => state.store.add(a)}
+                onAddRandom={action(() => state.store.addRandom())}
+            />
+            <ApplicantList
+                onRemove={action(node => state.store.remove(node))}
+                list={getList()}
+            />
         </div>
     )
 }
