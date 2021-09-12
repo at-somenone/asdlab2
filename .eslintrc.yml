@@ -23,7 +23,7 @@ rules:
         - warn
         - checkLoops: false
     prefer-const: warn
-    '@typescript-eslint/explicit-function-return-type': 
+    '@typescript-eslint/explicit-function-return-type':
         - warn
         - allowExpressions: true
     '@typescript-eslint/explicit-module-boundary-types': off

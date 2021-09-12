@@ -1,4 +1,4 @@
-import Applicant, { ExamGrade } from './Applicant'
+import Applicant from './Applicant'
 import styles from './Applicant.module.css'
 
 type Props = {
@@ -8,42 +8,16 @@ type Props = {
 
 const ApplicantView = ({ applicant, onRemove }: Props): JSX.Element => (
     <div className={styles.applicant}>
-        <div className={styles.left}>
+        <div>
             <span>Фамилия: {applicant.lastName}</span>
-            <br />
-            <span>
-                Оценки:{' '}
-                {applicant.grades
-                    .map(v => {
-                        switch (v) {
-                            case ExamGrade.Fail:
-                                return 'Неуд.'
-                            case ExamGrade.Pass:
-                                return 'Удовл.'
-                            case ExamGrade.Good:
-                                return 'Хорошо'
-                            case ExamGrade.Excellent:
-                                return 'Отлично'
-                            default:
-                                throw new Error('what')
-                        }
-                    })
-                    .join(', ')}
-            </span>
-            <br />
+            <span>Оценки: {applicant.grades.join(', ')}</span>
             <span>Место жительства: {applicant.city}</span>
-            <br />
         </div>
-        <div className={styles.middle}>
-            <span>
-                Аттестат с отличием: {applicant.hasCertificate ? 'Есть' : 'Нет'}
-            </span>
-            <br />
-            <span>
-                Необходимо общежитие: {applicant.needsHousing ? 'Да' : 'Нет'}
-            </span>
+        <div>
+            <span>Аттестат с отличием: {applicant.hasCertificate ? 'Есть' : 'Нет'}</span>
+            <span>Необходимо общежитие: {applicant.needsHousing ? 'Да' : 'Нет'}</span>
         </div>
-        <div className={styles.right}>
+        <div>
             <button onClick={() => onRemove()}>x</button>
         </div>
     </div>

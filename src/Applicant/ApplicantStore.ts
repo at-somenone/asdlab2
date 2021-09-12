@@ -1,14 +1,10 @@
-import { INode, ISublist, ObservableMultiLinkedList } from '../MultiLinkedList'
+import { INode, ISublist, ObservableMultiLinkedList } from 'MultiLinkedList'
 import Applicant, { ExamGrade } from './Applicant'
 import { action, makeObservable, observable } from 'mobx'
 import { Chance } from 'chance'
 import { v4 as uuid } from 'uuid'
-import Keyed from '../Keyed'
+import Keyed from 'Keyed'
 
-// все экзамены сданы на «отлично»;
-// имеется аттестат с отличием;
-// проживает за пределами населенного пункта, в котором расположен университет;
-// нуждается в общежитии;
 export default class ApplicantStore {
     private readonly list: ObservableMultiLinkedList<Keyed<Applicant>>
     readonly allApplicants: ISublist<Keyed<Applicant>>
@@ -20,14 +16,10 @@ export default class ApplicantStore {
     constructor() {
         this.list = new ObservableMultiLinkedList()
         this.allApplicants = this.list.getMainList()
-        this.allExamsExcelent = this.list.createSublist(a =>
-            a.grades.every(g => g === ExamGrade.Excellent)
-        )
+        this.allExamsExcelent = this.list.createSublist(a => a.grades.every(g => g === 5))
 
         this.hasCertificate = this.list.createSublist(a => a.hasCertificate)
-        this.outsideOryol = this.list.createSublist(
-            a => a.city.toLowerCase() !== 'орёл'
-        )
+        this.outsideOryol = this.list.createSublist(a => a.city.toLowerCase() !== 'орёл')
         this.needsHousing = this.list.createSublist(a => a.needsHousing)
         makeObservable(this)
     }
@@ -38,13 +30,7 @@ export default class ApplicantStore {
 
     @action addRandom(): void {
         const chance = new Chance()
-        const getGrade = (): ExamGrade =>
-            chance.pickone([
-                ExamGrade.Fail,
-                ExamGrade.Pass,
-                ExamGrade.Good,
-                ExamGrade.Excellent,
-            ])
+        const getGrade = (): ExamGrade => chance.pickone([2, 3, 4, 5])
 
         const applicant: Keyed<Applicant> = {
             lastName: chance.last(),

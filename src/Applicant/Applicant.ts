@@ -4,12 +4,7 @@
 // наименование населенного пункта, в котором проживает абитуриент;
 // сведения о необходимости предоставления общежития.
 
-export enum ExamGrade {
-    Fail,
-    Pass,
-    Good,
-    Excellent,
-}
+export type ExamGrade = 2 | 3 | 4 | 5
 
 type Applicant = {
     readonly lastName: string

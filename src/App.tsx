@@ -39,9 +39,7 @@ function App(): JSX.Element {
 
     return (
         <div>
-            <button onClick={action(() => state.store.clear())}>
-                Удалить все
-            </button>
+            <button onClick={action(() => state.store.clear())}>Удалить все</button>
             <br />
             <input
                 id="showAll"
@@ -58,13 +56,10 @@ function App(): JSX.Element {
                 type="radio"
                 checked={state.mode === ShowMode.AllExamsExcellent}
                 onChange={action(e => {
-                    if (e.target.checked)
-                        state.mode = ShowMode.AllExamsExcellent
+                    if (e.target.checked) state.mode = ShowMode.AllExamsExcellent
                 })}
             />
-            <label htmlFor="showAllExamsExcellent">
-                Все экзамены на отлично
-            </label>
+            <label htmlFor="showAllExamsExcellent">Все экзамены на отлично</label>
             <br />
             <input
                 id="showHasCertificate"
@@ -101,10 +96,7 @@ function App(): JSX.Element {
                 onAdd={a => state.store.add(a)}
                 onAddRandom={action(() => state.store.addRandom())}
             />
-            <ApplicantList
-                onRemove={action(node => state.store.remove(node))}
-                list={getList()}
-            />
+            <ApplicantList onRemove={action(node => state.store.remove(node))} list={getList()} />
         </div>
     )
 }
